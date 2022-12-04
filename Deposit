@@ -7,7 +7,7 @@
 {{ $XP := dbIncr .User.ID "XP" 1 }}
 
 {{ if .CmdArgs }}
-	{{ $Args := parseArgs 1 "Syntax is `$Deposit <int: Amount>`"
+	{{ $Args := parseArgs 1 "Syntax is `$Deposit <String: Amount>`"
 		(carg "string" "Amount") }}
 	{{ $Amount := $Args.Get 0 }}
 	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}

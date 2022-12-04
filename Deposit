@@ -1,0 +1,46 @@
+{{/*
+        Deposit coins into your bank!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+
+{{ $XP := dbIncr .User.ID "XP" 1 }}
+
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 1 "Syntax is `$Deposit <int: Amount>`"
+		(carg "int" "Amount") }}
+	{{ $Amount := $Args.Get 0 }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+	{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
+	{{ $BankLimit := toInt (mult $XP 100) }}
+
+	{{ if le (add $Bank $Amount) $BankLimit }} {{/* Normal deposit */}}
+		{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
+		{{ $Bank = dbIncr .User.ID "Bank" $Amount }}
+		{{ sendMessage nil (cembed 
+			"description" (print "Deposited " $Amount " coins to your bank!")
+			"footer" (sdict "icon_url" (.User.AvatarURL "512") "text" (print .User.Username "'s Bank: " $Bank "/" $BankLimit " 🏧"))
+			"color" 65280) }}
+
+	{{ else if gt $Amount $Wallet }} {{/* Insufficient funds */}}
+		{{ sendMessage nil (cembed 
+			"title" "Cannot deposit more than you have!"
+			"description" "Try depositing money you actually have. LMAO."
+			"color" 16711680) }}
+
+	{{ else if (gt (add $Amount $Bank) $BankLimit) }} {{/* Bank limit hit */}}
+		{{ $Amount := sub $BankLimit $Bank }}
+		{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
+		{{ $Bank = dbIncr .User.ID "Bank" $Amount }}
+		{{ sendMessage nil (cembed 
+			"title" "Bank Limit Hit‼️"
+			"description" (print "Deposited **" $Amount " coins** to your bank 🪙\n⤳ `ɪɴᴄʀᴇᴀꜱᴇ ʏᴏᴜʀ ʟɪᴍɪᴛ ʙʏ ʟᴇᴠᴇʟɪɴɢ ᴜᴘ!`📈")
+			"footer" (sdict "icon_url" (.User.AvatarURL "512") "text" (print .User.Username "'s Bank: " $Bank "/" $BankLimit " 🏧"))
+			"color" 65280) }}
+	{{ end }}
+
+{{ else }} {{/* No arg(s) */}}
+	{{ sendMessage nil (cembed 
+		"description" "Please provide an amount of coins to deposit!"
+		"color" 16711680) }}
+{{ end }}

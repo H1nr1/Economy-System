@@ -8,24 +8,29 @@
 
 {{ if .CmdArgs }}
 	{{ $Args := parseArgs 1 "Syntax is `$Deposit <int: Amount>`"
-		(carg "int" "Amount") }}
+		(carg "string" "Amount") }}
 	{{ $Amount := $Args.Get 0 }}
 	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+	{{ if eq (lower $Amount) "all" }}
+		{{ $Amount = $Wallet }}
+	{{ else if eq (lower $Amount) "half" }}
+		{{ $Amount = div $Wallet 2 }}
+	{{ end }}
 	{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
 	{{ $BankLimit := toInt (mult $XP 100) }}
 
-	{{ if gt $Amount $Wallet }} {{/* Insufficient funds */}}
+	{{ if gt (toInt $Amount) $Wallet }} {{/* Insufficient funds */}}
 		{{ sendMessage nil (cembed 
 			"title" "Cannot deposit more than you have!"
 			"description" "Try depositing money you actually have. LMAO."
 			"color" 16711680) }}
 
-	{{ else if lt $Amount 0 }} {{/* Attempt to deposit negative amount */}}
+	{{ else if lt (toInt $Amount) 0 }} {{/* Attempt to deposit negative amount */}}
 		{{ sendMessage nil (cembed 
 			"description" "Bruh... Cannot Deposit 0 or less coins 😐"
 			"color" 16711680) }}
 
-	{{ else if le (add $Bank $Amount) $BankLimit }} {{/* Normal deposit */}}
+	{{ else if le (add $Bank (toInt $Amount)) $BankLimit }} {{/* Normal deposit */}}
 		{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
 		{{ $Bank = dbIncr .User.ID "Bank" $Amount }}
 		{{ sendMessage nil (cembed 
@@ -33,7 +38,7 @@
 			"footer" (sdict "icon_url" (.User.AvatarURL "512") "text" (print .User.Username "'s Bank: " $Bank "/" $BankLimit " 🏧"))
 			"color" 65280) }}
 
-	{{ else if (gt (add $Bank $Amount) $BankLimit) }} {{/* Bank limit hit */}}
+	{{ else if (gt (add $Bank (toInt $Amount)) $BankLimit) }} {{/* Bank limit hit */}}
 		{{ $Amount := sub $BankLimit $Bank }}
 		{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
 		{{ $Bank = dbIncr .User.ID "Bank" $Amount }}

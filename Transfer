@@ -1,0 +1,46 @@
+{{/*
+        Transfer coins to others!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+
+{{ $XP := dbIncr .User.ID "XP" 1 }}
+
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 2 "Syntax is `$Transfer <User: @/ID> <String: Amount>`"
+		(carg "member" "Member")
+		(carg "string" "Amount") }}
+	{{ $Member := $Args.Get 0 }}
+	{{ $Amount := $Args.Get 1 }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+	{{ if eq (lower $Amount) "all" }}
+		{{ $Amount = $Wallet }}
+	{{ else if eq (lower $Amount) "half" }}
+		{{ $Amount = div $Wallet 2 }}
+	{{ end }}
+	{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
+
+	{{ if gt (toInt $Amount) $Wallet }} {{/* Insufficient funds */}}
+		{{ sendMessage nil (cembed 
+			"title" "Cannot transfer more than you have!"
+			"description" "Try giving coins you actually have. LMAO."
+			"color" 16711680) }}
+
+	{{ else if lt (toInt $Amount) 0 }} {{/* Attempt to transfer negative amount */}}
+		{{ sendMessage nil (cembed 
+			"description" "Bruh... Cannot give 0 or less coins 😐"
+			"color" 16711680) }}
+
+	{{ else if le (toInt $Amount) $Wallet }} {{/* Normal transfer */}}
+		{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
+		{{ $Silence = dbIncr $Member.User.ID "Wallet" $Amount }}
+		{{ sendMessage nil (cembed 
+			"description" (print "🪙 | Gave **" $Amount " coins** to " $Member.User.Mention "!")
+			"color" 65280) }}
+	{{ end }}
+
+{{ else }} {{/* No arg(s) */}}
+	{{ sendMessage nil (cembed 
+		"description" "Please provide an amount of coins to transfer!"
+		"color" 16711680) }}
+{{ end }}

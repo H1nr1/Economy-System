@@ -1,0 +1,92 @@
+{{/*
+        Rob other users!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+ 
+{{ $RobCooldown := dbGet .User.ID "RobCooldown" }}
+{{ $TimeSince := "" }}{{ if $RobCooldown }}{{ $TimeSince = toInt (toDuration (currentTime.Sub (or $RobCooldown.UpdatedAt $RobCooldown.CreatedAt))).Seconds }}{{ end }}
+{{ $Silence := "" }}
+ 
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 1 "Syntax is `$Rob <User: @/ID>`"
+		(carg "member" "Member") }}
+	{{ $Member := $Args.Get 0 }}
+	{{ $VUserW := toInt (dbGet $Member.User.ID "Wallet").Value }}
+	{{ $RUserW := toInt (dbGet .User.ID "Wallet").Value }}
+	{{ $RUserB := toInt (dbGet .User.ID "Bank").Value }}
+ 
+	{{ if not $RobCooldown }} {{/* First command usage for user */}}
+		{{ if ge $VUserW 100 }} {{/* Checks if victims wallet balance is >= 100 */}}
+			{{ if eq (randInt 1) 0 }} {{/* 1/2 chance of successful rob */}}
+				{{ $Amount := div (mult (randInt 40 61) $VUserW) 100 }} {{/* Rob amount = 40%-60% of victim's wallet balance */}}
+				{{ $Silence = dbIncr $Member.User.ID "Wallet" (print "-" $Amount) }}
+				{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
+				{{ sendMessage nil (cembed 
+					"title" "Rob Success!"
+					"description" (print "Robbed " $Member.User " for " $Amount " coins!")
+					"footer" (sdict "text" "➤ Info: For your first rob attempt, you have an increased chance of success and a greater rob percentage!")
+					"color" 65280) }}
+				{{ dbSet .User.ID "RobCooldown" true }}
+ 
+			{{ else }} {{/* Failed rob; 10% of robbing user's bank is given to victim */}}
+				{{ $Amount := div $RUserB 10 }}
+				{{ $Silence = dbIncr .User.ID "Bank" (print "-" $Amount) }}
+				{{ $Silence = dbIncr $Member.User.ID "Bank" $Amount }}
+				{{ sendMessage nil (cembed 
+					"title" "Rob Failed!"
+					"description" (print "Gave " $Member.User " " $Amount " of your coins!")
+					"footer" (sdict "text" "➤ Info: You had a 50% chance at being successful... and you missed. Way to throw away your first rob attempt")
+					"color" 16711680) }}
+				{{ dbSet .User.ID "RobCooldown" true }}
+			{{ end }}
+ 
+		{{ else }} {{/* Victim has less than 100 coins in wallet */}}
+			{{ sendMessage nil (cembed 
+				"description" "Cannot rob users with less than 100 coins in wallet!"
+				"color" 16711680) }}
+		{{ end }}
+ 
+	{{ else if ge $TimeSince 1800 }} {{/* Command usage is >= 30 minutes after last usage */}}
+		{{ if ge $VUserW 100 }} {{/* Checks if victims wallet balance is >= 100 */}}
+			{{ if eq (randInt 2) 0 }} {{/* 33% chance of successful rob */}}
+				{{ $Amount := div (mult (randInt 25 51) $VUserW) 100 }} {{/* Rob amount = 25%-50% of victim's wallet balance */}}
+				{{ $Silence = dbIncr $Member.User.ID "Wallet" (print "-" $Amount) }}
+				{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
+				{{ sendMessage nil (cembed 
+					"title" "Rob Success!"
+					"description" (print "Robbed " $Member.User " for " $Amount " coins!")
+					"footer" (sdict "text" "➤ Info: You had a 33% chance of success... and you did it!")
+					"color" 65280) }}
+				{{ dbSet .User.ID "RobCooldown" true }}
+ 
+			{{ else }} {{/* Failed rob; 10% of robbing user's bank is given to victim */}}
+				{{ $Amount := div $RUserB 10 }}
+				{{ $Silence = dbIncr .User.ID "Bank" (print "-" $Amount) }}
+				{{ $Silence = dbIncr $Member.User.ID "Bank" $Amount }}
+				{{ sendMessage nil (cembed 
+					"title" "Rob Failed!"
+					"description" (print "Gave " $Member.User " " $Amount " of your coins!")
+					"footer" (sdict "text" "➤ Info: You had a 33% chance of success... and you missed.")
+					"color" 16711680) }}
+				{{ dbSet .User.ID "RobCooldown" true }}
+			{{ end }}
+ 
+		{{ else }} {{/* Victim has less than 100 coins in wallet */}}
+			{{ sendMessage nil (cembed 
+				"description" "Cannot rob users with less than 100 coins in wallet!"
+				"color" 16711680) }}
+		{{ end }}
+ 
+	{{ else if lt $TimeSince 1800 }} {{/* Command usage is less than 30 minutes after last usage */}}
+		{{ sendMessage nil (cembed 
+			"description" (print "❌ | Please wait " (humanizeDurationSeconds (mult (sub 1800 $TimeSince) 1000000000)) " before attempting to rob again ⚠️")
+			"footer" (sdict "text" "➤ Info: Rob has a cooldown of 30 minutes!")
+			"color" 16711680) }}
+	{{ end }}
+ 
+{{ else }} {{/* No user given to rob */}}
+	{{ sendMessage nil (cembed 
+		"description" "Please provide a user to rob!"
+		"color" 16711680) }}
+{{ end }}

@@ -3,7 +3,7 @@
 	
         Author: H1nr1 <https://github.com/H1nr1>
 
-	Add user database () to join message for randomization
+	Add user database to join message for randomization
 */}}
 
 {{ $Silence := dbIncr .User.ID "XP" 1 }}

@@ -60,8 +60,8 @@
 				{{- $Place = add $Place 1 -}}
 			{{ end }}
 			{{ sendMessage nil (cembed 
-				"author" (sdict "icon_url" $GuildIcon "name" (print .Guild.Name "'s XP Leaderboard 💲"))
-				"description" (print $Desc "\n\n╔═ " $Rank " " .User.Mention " - " $XP " 🪙 ═╗")
+				"author" (sdict "icon_url" $GuildIcon "name" (print .Guild.Name "'s XP Leaderboard 🧪"))
+				"description" (print $Desc "\n\n╔═ " $Rank " " .User.Mention " - " $XP " ═╗")
 				"color" 13938487
 				"footer" (sdict "text" "Showing top 10 XP values 🏦")
 				"timestamp" currentTime) }}

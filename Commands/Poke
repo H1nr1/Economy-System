@@ -1,5 +1,5 @@
 {{/*
-        Poke a random user for some earnings!
+        Poke a random user (or YAGPDB) for some coins!
 	
         Author: H1nr1 <https://github.com/H1nr1>
 
@@ -7,6 +7,7 @@
 */}}
 
 {{ $Silence := dbIncr .User.ID "XP" 1 }}
+
 {{ $Amount := randInt 50 201 }}
 {{ $RandUser := 204255221017214977 }}
 {{ if ($Entries := dbCount "Users") }}
@@ -22,7 +23,7 @@
 	{{ sendMessage nil (cembed 
 		"title" (print "You poked **" (userArg $RandUser) "** and they gave you **" $Amount " coins**!")
 		"thumbnail" (sdict "url" "https://images-ext-1.discordapp.net/external/GNevA-4LJDZ7-OiWUsUAZhqgHkTDhu4EFnjVvTFybs0/https/i.imgur.com/Hja6mZU.gif")
-		"footer" (sdict "text" "➤ Info: Poke gives a random amount between 50 and 100")
+		"footer" (sdict "text" "➤ Info: Poke gives a random amount between 50 and 200")
 		"color" 65280) }}
 	{{ dbSet .User.ID "PokeCooldown" true }}
  
@@ -31,7 +32,7 @@
 	{{ sendMessage nil (cembed 
 		"title" (print "You poked **" (userArg $RandUser) "** and they gave you **" $Amount " coins**!")
 		"thumbnail" (sdict "url" "https://images-ext-1.discordapp.net/external/GNevA-4LJDZ7-OiWUsUAZhqgHkTDhu4EFnjVvTFybs0/https/i.imgur.com/Hja6mZU.gif")
-		"footer" (sdict "text" "➤ Info: Poke gives a random amount between 50 and 100")
+		"footer" (sdict "text" "➤ Info: Poke gives a random amount between 50 and 200")
 		"color" 65280) }}
 	{{ dbSet .User.ID "PokeCooldown" true }}
  

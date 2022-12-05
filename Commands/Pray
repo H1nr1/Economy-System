@@ -18,7 +18,7 @@
 		"color" 65280) }}
 	{{ dbSet .User.ID "PrayCooldown" true }}
  
-{{ else if (ge $TimeSince 30) }} {{/* Command usage is more than 1 minute after last usage */}}
+{{ else if (ge $TimeSince 30) }} {{/* Command usage is more than 30 seconds after last usage */}}
 	{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
 	{{ sendMessage nil (cembed 
 		"description" (print "You prayed to the Gods and they blessed you with **" $Amount " coins** 🪙")
@@ -26,7 +26,7 @@
 		"color" 65280) }}
 	{{ dbSet .User.ID "PrayCooldown" true }}
  
-{{ else if lt $TimeSince 30 }} {{/* Command usage is less than 1 minute after last usage */}}
+{{ else if lt $TimeSince 30 }} {{/* Command usage is less than 30 seconds after last usage */}}
 	{{ $ID := sendMessageRetID nil (cembed 
 		"description" (print "❌ | Please wait " (humanizeDurationSeconds (mult (sub 30 $TimeSince) 1000000000)) " before praying again ⚠️")
 		"footer" (sdict "text" "➤ Info: Pray has a cooldown of 30 seconds")

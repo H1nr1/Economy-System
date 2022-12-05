@@ -13,7 +13,7 @@
 	{{ $Silence = dbIncr .User.ID "Wallet" 5000 }}
 	{{ sendMessage nil (cembed 
 		"author" (sdict "icon_url" (.User.AvatarURL "512") "name" (print "Daily Reward 💹"))
-		"description" (print "✅ | You received 5000 Coins for your first daily! 💰")
+		"description" (print "✅ | You received 5,000 Coins for your first daily! 💰")
 		"footer" (sdict "text" "➤ Tip: Daily amount increases by 500 coins per consecutive day")
 		"color" 65280) }}
 	{{ dbSet .User.ID "DCooldown" true }}

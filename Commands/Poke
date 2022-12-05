@@ -1,0 +1,44 @@
+{{/*
+        Poke a random user for some earnings!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+
+	Add user database () to join message for randomization
+*/}}
+
+{{ $Silence := dbIncr .User.ID "XP" 1 }}
+{{ $Amount := randInt 50 201 }}
+{{ $RandUser := 204255221017214977 }}
+{{ if ($Entries := dbCount "Users") }}
+	{{ range (dbTopEntries "Users" 1 (randInt $Entries)) }}
+		{{- $RandUser = .User.ID -}}
+	{{ end }}
+{{ end }}
+{{ $PokeCooldown := dbGet .User.ID "PokeCooldown" }}
+{{ $TimeSince := "" }}{{ if $PokeCooldown }}{{ $TimeSince = toInt (toDuration (currentTime.Sub (or $PokeCooldown.UpdatedAt $PokeCooldown.CreatedAt))).Seconds }}{{ end }}
+ 
+{{ if not $PokeCooldown }} {{/* First command usage for user */}}
+	{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
+	{{ sendMessage nil (cembed 
+		"title" (print "You poked **" (userArg $RandUser) "** and they gave you **" $Amount " coins**!")
+		"thumbnail" (sdict "url" "https://images-ext-1.discordapp.net/external/GNevA-4LJDZ7-OiWUsUAZhqgHkTDhu4EFnjVvTFybs0/https/i.imgur.com/Hja6mZU.gif")
+		"footer" (sdict "text" "➤ Info: Poke gives a random amount between 50 and 100")
+		"color" 65280) }}
+	{{ dbSet .User.ID "PokeCooldown" true }}
+ 
+{{ else if (ge $TimeSince 60) }} {{/* Command usage is more than 1 minute after last usage */}}
+	{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
+	{{ sendMessage nil (cembed 
+		"title" (print "You poked **" (userArg $RandUser) "** and they gave you **" $Amount " coins**!")
+		"thumbnail" (sdict "url" "https://images-ext-1.discordapp.net/external/GNevA-4LJDZ7-OiWUsUAZhqgHkTDhu4EFnjVvTFybs0/https/i.imgur.com/Hja6mZU.gif")
+		"footer" (sdict "text" "➤ Info: Poke gives a random amount between 50 and 100")
+		"color" 65280) }}
+	{{ dbSet .User.ID "PokeCooldown" true }}
+ 
+{{ else if lt $TimeSince 60 }} {{/* Command usage is less than 1 minute after last usage */}}
+	{{ $ID := sendMessageRetID nil (cembed 
+		"description" (print "❌ | Please wait " (humanizeDurationSeconds (mult (sub 60 $TimeSince) 1000000000)) " before poking again ⚠️")
+		"footer" (sdict "text" "➤ Info: Poke has a cooldown of 60 seconds")
+		"color" 16711680) }}
+	{{ deleteMessage nil $ID (sub 60 $TimeSince) }}
+{{ end }}

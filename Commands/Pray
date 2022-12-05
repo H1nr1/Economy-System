@@ -1,0 +1,35 @@
+{{/*
+        Pray for some coins!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+ 
+*/}}
+ 
+{{ $Silence := dbIncr .User.ID "XP" 1 }}
+{{ $Amount := randInt 50 101 }}
+{{ $PrayCooldown := dbGet .User.ID "PrayCooldown" }}
+{{ $TimeSince := "" }}{{ if $PrayCooldown }}{{ $TimeSince = toInt (toDuration (currentTime.Sub (or $PrayCooldown.UpdatedAt $PrayCooldown.CreatedAt))).Seconds }}{{ end }}
+ 
+{{ if not $PrayCooldown }} {{/* First command usage for user */}}
+	{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
+	{{ sendMessage nil (cembed 
+		"description" (print "You prayed to the Gods and they blessed you with **" $Amount " coins** 🪙")
+		"footer" (sdict "text" "➤ Info: Pray gives a random amount between 50 and 100")
+		"color" 65280) }}
+	{{ dbSet .User.ID "PrayCooldown" true }}
+ 
+{{ else if (ge $TimeSince 30) }} {{/* Command usage is more than 1 minute after last usage */}}
+	{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
+	{{ sendMessage nil (cembed 
+		"description" (print "You prayed to the Gods and they blessed you with **" $Amount " coins** 🪙")
+		"footer" (sdict "text" "➤ Info: Pray gives a random amount between 50 and 100")
+		"color" 65280) }}
+	{{ dbSet .User.ID "PrayCooldown" true }}
+ 
+{{ else if lt $TimeSince 30 }} {{/* Command usage is less than 1 minute after last usage */}}
+	{{ $ID := sendMessageRetID nil (cembed 
+		"description" (print "❌ | Please wait " (humanizeDurationSeconds (mult (sub 30 $TimeSince) 1000000000)) " before praying again ⚠️")
+		"footer" (sdict "text" "➤ Info: Pray has a cooldown of 30 seconds")
+		"color" 16711680) }}
+	{{ deleteMessage nil $ID (sub 30 $TimeSince) }}
+{{ end }}

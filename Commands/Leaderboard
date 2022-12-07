@@ -9,15 +9,19 @@
 {{ $GuildIcon := printf "https://cdn.discordapp.com/icons/%d/%s.png" .Guild.ID .Guild.Icon }}
 
 {{ if .CmdArgs }}
-	{{ $Args := parseArgs 1 "Syntax is `$Leaderboard [String: Bank/Wallet/XP/Level]`"
+	{{ $Args := parseArgs 1 "Syntax is `$Leaderboard [String: Bank/B/Wallet/W/XP/Level]`"
 		(carg "string" "LBType") }}
 	{{ $Type := $Args.Get 0 }}
 
 	{{ if inFold (cslice "bank" "b" "wallet" "w" "xp" "level") $Type }}
 		{{ if inFold (cslice "bank" "b") $Type }} {{/* Bank LB */}}
 			{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
-			{{ $Rank := dbRank (sdict "userID" .User.ID "pattern" "Bank") .User.ID "Bank" }}
-			{{ if in (cslice 1 2 3) $Rank }}{{ $Rank = $Positions.Get $Rank }}{{ else }}{{ $Rank = print $Rank "." }}{{ end }}
+			{{ $Rank := dbRank (sdict "pattern" "Bank") .User.ID "Bank" }}
+			{{ if in (cslice 1 2 3) $Rank }}
+				{{ $Rank = $Positions.Get $Rank }}
+			{{ else }}
+				{{ $Rank = print $Rank "." }}
+			{{ end }}
 			{{ $Place := 1 }}{{ $Pos := "" }}{{ $Desc := "" }}
 			{{ range (dbTopEntries "Bank" 10 0) }}
 				{{- if in (cslice 1 2 3) $Place -}}{{- $Pos = $Positions.Get $Place -}}{{- else -}}{{- $Pos = print $Place "." -}}{{- end -}}
@@ -34,8 +38,12 @@
 		{{ else if inFold (cslice "wallet" "w") $Type }} {{/* Wallet LB */}}
 			{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
 			{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
-			{{ $Rank := dbRank (sdict "userID" .User.ID "pattern" "Wallet") .User.ID "Wallet" }}
-			{{ if in (cslice 1 2 3) $Rank }}{{ $Rank = $Positions.Get $Rank }}{{ else }}{{ $Rank = print $Rank "." }}{{ end }}
+			{{ $Rank := dbRank (sdict "pattern" "Wallet") .User.ID "Wallet" }}
+			{{ if in (cslice 1 2 3) $Rank }}
+				{{ $Rank = $Positions.Get $Rank }}
+			{{ else }}
+				{{ $Rank = print $Rank "." }}
+			{{ end }}
 			{{ $Place := 1 }}{{ $Pos := "" }}{{ $Desc := "" }}
 			{{ range (dbTopEntries "Wallet" 10 0) }}
 				{{- if in (cslice 1 2 3) $Place -}}{{- $Pos = $Positions.Get $Place -}}{{- else -}}{{- $Pos = print $Place "." -}}{{- end -}}
@@ -51,8 +59,12 @@
 
 		{{ else if inFold (cslice "xp" "level") $Type }} {{/* XP LB */}}
 			{{ $XP := (dbGet .User.ID "XP").Value }}
-			{{ $Rank := dbRank (sdict "userID" .User.ID "pattern" "XP") .User.ID "XP" }}
-			{{ if in (cslice 1 2 3) $Rank }}{{ $Rank = $Positions.Get $Rank }}{{ else }}{{ $Rank = print $Rank "." }}{{ end }}
+			{{ $Rank := dbRank (sdict "pattern" "XP") .User.ID "XP" }}
+			{{ if in (cslice 1 2 3) $Rank }}
+				{{ $Rank = $Positions.Get $Rank }}
+			{{ else }}
+				{{ $Rank = print $Rank "." }}
+			{{ end }}
 			{{ $Place := 1 }}{{ $Pos := "" }}{{ $Desc := "" }}
 			{{ range (dbTopEntries "XP" 10 0) }}
 				{{- if in (cslice 1 2 3) $Place -}}{{- $Pos = $Positions.Get $Place -}}{{- else -}}{{- $Pos = print $Place "." -}}{{- end -}}
@@ -75,7 +87,7 @@
 
 {{ else }} {{/* Default to bank */}}
 	{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
-	{{ $Rank := dbRank (sdict "userID" .User.ID "pattern" "Bank") .User.ID "Bank" }}
+	{{ $Rank := dbRank (sdict "pattern" "Bank") .User.ID "Bank" }}
 	{{ if in (cslice 1 2 3) $Rank }}
 		{{ $Rank = $Positions.Get $Rank }}
 	{{ else }}

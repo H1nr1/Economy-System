@@ -1,0 +1,48 @@
+{{/*
+        Collect your weekly gift!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+ 
+{{ $Silence := dbIncr .User.ID "XP" 1 }}
+ 
+{{ $Amount := add (mult ($WStreak := toInt (add (dbGet .User.ID "WStreak").Value 1)) 5000) 10000 }}
+{{ $WCooldown := dbGet .User.ID "WCooldown" }}
+{{ $TimeSince := "" }}{{ if $WCooldown }}{{ $TimeSince = toInt (toDuration (currentTime.Sub (or $WCooldown.UpdatedAt $WCooldown.CreatedAt))).Seconds }}{{ end }}
+ 
+{{ if not $WCooldown }} {{/* First command usage for user */}}
+	{{ $Silence = dbIncr .User.ID "Wallet" 20000 }}
+	{{ sendMessage nil (cembed 
+		"author" (sdict "icon_url" (.User.AvatarURL "512") "name" (print "Weekly Reward 💹"))
+		"description" (print "✅ | You received 20,000 Coins for your first weekly! 💰")
+		"footer" (sdict "text" "➤ Tip: Weekly amount increases by 5000 coins per consecutive week")
+		"color" 65280) }}
+	{{ dbSet .User.ID "WCooldown" true }}
+	{{ $Silence = dbIncr .User.ID "WStreak" 1 }}
+ 
+{{ else if and (ge $TimeSince 604800) (lt $TimeSince 1209600) }} {{/* Command usage is between 7 (inclusively) and 14 (exclusively) days of last usage */}}
+	{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
+	{{ sendMessage nil (cembed 
+		"author" (sdict "icon_url" (.User.AvatarURL "512") "name" (print "Weekly Reward 💹"))
+		"description" (print "✅ | You received " $Amount " Coins with a weekly streak of " $WStreak " 💰")
+		"footer" (sdict "text" "➤ Tip: Weekly amount increases by 5000 coins per consecutive week")
+		"color" 65280) }}
+	{{ dbSet .User.ID "WCooldown" true }}
+	{{ $Silence = dbIncr .User.ID "WStreak" 1 }}
+ 
+{{ else if ge $TimeSince 1209600 }} {{/* Command usage is 14 or more days after last usage */}}
+	{{ $Silence = dbIncr .User.ID "Wallet" 10000 }}
+	{{ sendMessage nil (cembed 
+		"author" (sdict "icon_url" (.User.AvatarURL "512") "name" (print "Weekly Reward 💹"))
+		"description" (print "Lost weekly streak! 😭\n\nYou got **10000 coins**!💰")
+		"footer" (sdict "text" "➤ Tip: Weekly amount increases by 5000 coins per consecutive week")
+		"color" 65280) }}
+	{{ dbSet .User.ID "WCooldown" true }}
+	{{ dbSet .User.ID "WStreak" 0 }}
+ 
+{{ else if lt $TimeSince 604800 }} {{/* Command usage is less then 7 days after last usage */}}
+	{{ sendMessage nil (cembed 
+		"description" (print "❌ | Please wait " (humanizeDurationSeconds (mult (sub 604800 $TimeSince) 1000000000)) " before claiming your Weekly reward again ⚠️")
+		"footer" (sdict "text" "➤ Tip: Weekly amount increases by 5000 coins per consecutive week")
+		"color" 16711680) }}
+{{ end }}

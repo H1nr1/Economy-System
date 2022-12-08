@@ -25,7 +25,7 @@
 			"description" "Try depositing money you actually have. LMAO."
 			"color" 16711680) }}
 
-	{{ else if lt (toInt $Amount) 0 }} {{/* Attempt to deposit negative amount */}}
+	{{ else if le (toInt $Amount) 0 }} {{/* Attempt to deposit negative amount */}}
 		{{ sendMessage nil (cembed 
 			"description" "Bruh... Cannot Deposit 0 or less coins 😐"
 			"color" 16711680) }}

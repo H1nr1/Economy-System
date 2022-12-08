@@ -24,7 +24,7 @@
 			(sdict "name" "__Scammer__" "value" (print "Pay: `~1000`🪙\nCooldown: `6h`\nXP: `100+`") "inline" true))
 		"color" (randInt 0xFFFFFF)
 		"footer" (sdict "text" "These jobs can be worked by anyone!")) }}
-	{{ addMessageReactions nil $ID "🎨" "🧌" "🚸" "🪠" "🔪" "⚠️" }}
+	{{ addMessageReactions nil $ID "🎨" "🧌" "👨‍🦲" "🪠" "🔪" "⚠️" }}
 
 {{ else if .CmdArgs }}
 	{{ if eq $Page 1 }}
@@ -39,7 +39,7 @@
 				(sdict "name" "__Scammer__" "value" (print "Pay: `~1000`🪙\nCooldown: `6h`\nXP: `100+`") "inline" true))
 			"color" (randInt 0xFFFFFF)
 			"footer" (sdict "text" "These jobs can be worked by anyone!")) }}
-		{{ addMessageReactions nil $ID "🎨" "🧌" "🚸" "🪠" "🔪" "⚠️" }}
+		{{ addMessageReactions nil $ID "🎨" "🧌" "👨‍🦲" "🪠" "🔪" "⚠️" }}
 
 	{{ else if and (eq $Page 2) (hasRoleID $PremiumRole) }}
 		{{ $ID := sendMessageRetID nil (cembed 

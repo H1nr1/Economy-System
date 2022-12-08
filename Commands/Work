@@ -1,0 +1,64 @@
+{{/*
+        View your wallet and bank balance!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+
+{{ $PremiumRole := 1036899102144872489 }}
+ 
+{{ $XP := dbIncr .User.ID "XP" 1 }}
+
+{{ $Args := parseArgs 0 "Syntax is `$Work [int: 1/2]`" 
+	(carg "int" "Page") }}
+{{ $Page := $Args.Get 0 }}
+
+{{ if not .CmdArgs }}
+	{{ $ID := sendMessageRetID nil (cembed 
+		"author" (sdict "icon_url" (.User.AvatarURL "512") "name" "Jobs")
+		"fields" (cslice 
+			(sdict "name" "__Artist__" "value" (print "Pay: `~100`🪙\nCooldown: `1m`\nXP: `0+`") "inline" true)
+			(sdict "name" "__Troll__" "value" (print "Pay: `~150`🪙\nCooldown: `5m`\nXP: `10+`") "inline" true)
+			(sdict "name" "__Mod__" "value" (print "Pay: `~300`🪙\nCooldown: `30m`\nXP: `25+`") "inline" true)
+			(sdict "name" "__Plumber__" "value" (print "Pay: `~500`🪙\nCooldown: `1h`\nXP: `50+`") "inline" true)
+			(sdict "name" "__Chef__" "value" (print "Pay: `~800`🪙\nCooldown: `3h`\nXP: `75+`") "inline" true)
+			(sdict "name" "__Scammer__" "value" (print "Pay: `~1000`🪙\nCooldown: `6h`\nXP: `100+`") "inline" true))
+		"color" (randInt 0xFFFFFF)
+		"footer" (sdict "text" "Each job has a range of ±50 from listed pay")) }}
+	{{ addMessageReactions nil $ID "🎨" "🧌" "🚸" "🪠" "🔪" "⚠️" }}
+
+{{ else if .CmdArgs }}
+	{{ if eq $Page 1 }}
+		{{ $ID := sendMessageRetID nil (cembed 
+			"author" (sdict "icon_url" (.User.AvatarURL "512") "name" "Jobs")
+			"fields" (cslice 
+				(sdict "name" "__Artist__" "value" (print "Pay: `~100`🪙\nCooldown: `1m`\nXP: `0+`") "inline" true)
+				(sdict "name" "__Troll__" "value" (print "Pay: `~150`🪙\nCooldown: `5m`\nXP: `10+`") "inline" true)
+				(sdict "name" "__Mod__" "value" (print "Pay: `~300`🪙\nCooldown: `30m`\nXP: `25+`") "inline" true)
+				(sdict "name" "__Plumber__" "value" (print "Pay: `~500`🪙\nCooldown: `1h`\nXP: `50+`") "inline" true)
+				(sdict "name" "__Chef__" "value" (print "Pay: `~800`🪙\nCooldown: `3h`\nXP: `75+`") "inline" true)
+				(sdict "name" "__Scammer__" "value" (print "Pay: `~1000`🪙\nCooldown: `6h`\nXP: `100+`") "inline" true))
+			"color" (randInt 0xFFFFFF)
+			"footer" (sdict "text" "Each job has a range of ±50 from listed pay")) }}
+		{{ addMessageReactions nil $ID "🎨" "🧌" "🚸" "🪠" "🔪" "⚠️" }}
+
+	{{ else if and (eq $Page 2) (hasRoleID $PremiumRole) }}
+		{{ $ID := sendMessageRetID nil (cembed 
+			"author" (sdict "icon_url" (.User.AvatarURL "512") "name" "Jobs")
+			"fields" (cslice 
+				(sdict "name" "__Gold Digger__" "value" (print "Pay: `~2000`🪙\nCooldown: `12h`\nXP: `2000+`") "inline" true)
+				(sdict "name" "__Teacher__" "value" (print "Pay: `~3000`🪙\nCooldown: `18h`\nXP: `3000+`") "inline" true)
+				(sdict "name" "__Rapper__" "value" (print "Pay: `~5000`🪙\nCooldown: `24h`\nXP: `5000+`") "inline" true)
+				(sdict "name" "__Hacker__" "value" (print "Pay: `~8000`🪙\nCooldown: `36h`\nXP: `10000+`") "inline" true)
+				(sdict "name" "__Influencer__" "value" (print "Pay: `~10000`🪙\nCooldown: `48h`\nXP: `20000+`") "inline" true)
+				(sdict "name" "__Stripper__" "value" (print "Pay: `~20000`🪙\nCooldown: `72h`\nXP: `50000+`") "inline" true))
+			"color" (randInt 0xFFFFFF)
+			"footer" (sdict "text" "You must have Full Access to work these jobs")) }}
+		{{ addMessageReactions nil $ID "🪙" "📝" "🎤" "🧑‍💻" "📸" "💰" }}
+
+	{{ else }}
+		{{ sendMessage nil (cembed 
+			"title" "Invalid page number"
+			"description" "Syntax is `$Work [int:1/2]`"
+			"color" 16711680) }}
+	{{ end }}
+{{ end }}

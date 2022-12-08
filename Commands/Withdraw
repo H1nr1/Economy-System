@@ -1,0 +1,45 @@
+{{/*
+        Withdraw coins from your bank!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+ 
+{{ $XP := dbIncr .User.ID "XP" 1 }}
+ 
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 1 "Syntax is `$Withdraw <String: Amount>`"
+		(carg "string" "Amount") }}
+	{{ $Amount := $Args.Get 0 }}
+	{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
+	{{ if eq (lower $Amount) "all" }}
+		{{ $Amount = $Bank }}
+	{{ else if eq (lower $Amount) "half" }}
+		{{ $Amount = div $Bank 2 }}
+	{{ end }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+ 
+	{{ if gt (toInt $Amount) $Bank }} {{/* Insufficient funds */}}
+		{{ sendMessage nil (cembed 
+			"title" "Cannot withdraw more than you have!"
+			"description" "Try withdrawing money you actually have. LMAO."
+			"color" 16711680) }}
+ 
+	{{ else if le (toInt $Amount) 0 }} {{/* Attempt to withdraw negative amount */}}
+		{{ sendMessage nil (cembed 
+			"description" "Bruh... Cannot Withdraw 0 or less coins 😐"
+			"color" 16711680) }}
+ 
+	{{ else if le (toInt $Amount) $Bank }} {{/* Normal deposit */}}
+		{{ $Silence := dbIncr .User.ID "Bank" (print "-" $Amount) }}
+		{{ $Wallet = dbIncr .User.ID "Wallet" $Amount }}
+		{{ sendMessage nil (cembed 
+			"description" (print "Withdrew " $Amount " coins from your bank!")
+			"footer" (sdict "icon_url" (.User.AvatarURL "512") "text" (print .User.Username "'s Wallet: " $Wallet " 🪙"))
+			"color" 65280) }}
+ 	{{ end }}
+ 
+{{ else }} {{/* No arg(s) */}}
+	{{ sendMessage nil (cembed 
+		"description" "Please provide an amount of coins to withdraw!"
+		"color" 16711680) }}
+{{ end }}

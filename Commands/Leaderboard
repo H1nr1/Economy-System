@@ -103,10 +103,11 @@
 		{{- $Desc = (joinStr "\n" $Desc (print $Pos " " (userArg .UserID) " - " (toInt .Value))) -}}
 		{{- $Place = add $Place 1 -}}
 	{{ end }}
-	{{ sendMessage nil (cembed 
+	{{ $ID := sendMessageRetID nil (cembed 
 		"author" (sdict "icon_url" $GuildIcon "name" (print .Guild.Name "'s Bank Leaderboard 💲"))
 		"description" (print $Desc "\n\n╔═ " $Rank " " .User.Mention " - " $Bank " 🪙 ═╗")
 		"color" 13938487
 		"footer" (sdict "text" "Showing top 10 bank values 🏦")
 		"timestamp" currentTime) }}
+	{{ addMessageReactions nil $ID "🏦" "👛" "🧪" }}
 {{ end }}

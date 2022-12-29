@@ -1,8 +1,18 @@
 {{ $List := dict 0 "Manslaughter" 1 "Robbery" 2 "Vandalism" 3 "Assault" 4 "Fraud" 5 "Traffic Infraction" 6 "Domestic Violence" }}
 {{ $Crime := $List.Get (randInt 0 7) }}
 {{ $Amount := randInt 50 301 }}
+
 {{ $W/L := randInt 0 11 }}
-{{ if in (cslice 0 1) $W/L }}{{ $W/L = cslice "you being caught" "lost " 16711680 }}{{ $Amount = print "-" $Amount }} {{ else if in (cslice 2 3 4 5 6 7) $W/L }}{{ $W/L = cslice "a success" "gained "  9498256 }} {{ else if in (cslice 8 9 10) $W/L }}{{ $W/L = cslice "a flawless getaway" "gained " 65280 }}{{ $Amount = mult $Amount 3 }} {{ end }}
+{{ if in (cslice 0 1) $W/L }}
+	{{ $W/L = cslice "you being caught" "lost " 16711680 }}
+	{{ $Amount = print "-" $Amount }}
+{{ else if in (cslice 2 3 4 5 6 7) $W/L }}
+	{{ $W/L = cslice "a success" "gained "  9498256 }}
+{{ else if in (cslice 8 9 10) $W/L }}
+	{{ $W/L = cslice "a flawless getaway" "gained " 65280 }}
+	{{ $Amount = mult $Amount 3 }}
+{{ end }}
+
 {{ sendMessage nil (cembed 
 	"title" (print "Crime Attempted: " $Crime)
 	"description" (print $Crime " resulted in " (index $W/L 0) "\n**You " (index $W/L 1) $Amount " coins**")

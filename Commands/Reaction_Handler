@@ -228,3 +228,5 @@
 		{{ template "NoXP" (sdict "XP" (sub 10000 $XP)) }}
 	{{ end }}
 {{ end }}
+
+{{ deleteMessageReaction nil .ReactionMessage.ID .User.ID .Reaction.Emoji.Name }}

@@ -41,7 +41,7 @@
 	{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 60) }}
 		{{ template "Work" (sdict "Lower" 80 "Upper" 126 "User" .User "Job" "Artist" "Amount" $Amount "CD" "60 seconds" "CDName" "WArtistCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 	{{ else }}
-		{{ template "CD" (sdict "Job" "Artist" "CDSec" 60 "TS" $TimeSince "CD" "60 seconds" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "CD" (sdict "Job" "Artist" "CDSec" 60 "TS" $TimeSince "CD" "60 seconds" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -55,10 +55,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 300) }}
 			{{ template "Work" (sdict "Lower" 125 "Upper" 201 "User" .User "Job" "Troll" "Amount" $Amount "CD" "5 minutes" "CDName" "WTrollCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Troll" "CDSec" 300 "TS" $TimeSince "CD" "5 minutes" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Troll" "CDSec" 300 "TS" $TimeSince "CD" "5 minutes" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 10 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 10 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -72,10 +72,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 1800) }}
 			{{ template "Work" (sdict "Lower" 250 "Upper" 401 "User" .User "Job" "Discord Mod" "Amount" $Amount "CD" "30 minutes" "CDName" "WModCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Discord Mod" "CDSec" 1800 "TS" $TimeSince "CD" "30 minutes" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Discord Mod" "CDSec" 1800 "TS" $TimeSince "CD" "30 minutes" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 25 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 25 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -89,10 +89,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 3600) }}
 			{{ template "Work" (sdict "Lower" 450 "Upper" 601 "User" .User "Job" "Plumber" "Amount" $Amount "CD" "60 minutes" "CDName" "WPlumberCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Plumber" "CDSec" 3600 "TS" $TimeSince "CD" "60 minutes" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Plumber" "CDSec" 3600 "TS" $TimeSince "CD" "60 minutes" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 50 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 50 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -106,10 +106,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 10800) }}
 			{{ template "Work" (sdict "Lower" 750 "Upper" 901 "User" .User "Job" "Chef" "Amount" $Amount "CD" "3 hours" "CDName" "WChefCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Chef" "CDSec" 10800 "TS" $TimeSince "CD" "3 hours" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Chef" "CDSec" 10800 "TS" $TimeSince "CD" "3 hours" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 75 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 75 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -123,10 +123,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 21600) }}
 			{{ template "Work" (sdict "Lower" 850 "Upper" 1201 "User" .User "Job" "Scammer" "Amount" $Amount "CD" "6 hours" "CDName" "WScammerCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Scammer" "CDSec" 21600 "TS" $TimeSince "CD" "6 hours" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Scammer" "CDSec" 21600 "TS" $TimeSince "CD" "6 hours" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 100 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 100 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -140,10 +140,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 43200) }}
 			{{ template "Work" (sdict "Lower" 1800 "Upper" 2251 "User" .User "Job" "Gold Digger" "Amount" $Amount "CD" "12 hours" "CDName" "WGoldDiggerCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Gold Digger" "CDSec" 43200 "TS" $TimeSince "CD" "12 hours" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Gold Digger" "CDSec" 43200 "TS" $TimeSince "CD" "12 hours" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 250 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 250 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -157,10 +157,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 64800) }}
 			{{ template "Work" (sdict "Lower" 2800 "Upper" 3251 "User" .User "Job" "Teacher" "Amount" $Amount "CD" "18 hours" "CDName" "WTeacherCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Teacher" "CDSec" 64800 "TS" $TimeSince "CD" "18 hours" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Teacher" "CDSec" 64800 "TS" $TimeSince "CD" "18 hours" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 500 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 500 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -174,10 +174,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 86400) }}
 			{{ template "Work" (sdict "Lower" 4800 "Upper" 5251 "User" .User "Job" "Rapper" "Amount" $Amount "CD" "24 hours" "CDName" "WRapperCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Rapper" "CDSec" 86400 "TS" $TimeSince "CD" "24 hours" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Rapper" "CDSec" 86400 "TS" $TimeSince "CD" "24 hours" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 1000 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 1000 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -191,10 +191,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 129600) }}
 			{{ template "Work" (sdict "Lower" 7800 "Upper" 8501 "User" .User "Job" "Hacker" "Amount" $Amount "CD" "36 hours" "CDName" "WHackerCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Hacker" "CDSec" 129600 "TS" $TimeSince "CD" "36 hours" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Hacker" "CDSec" 129600 "TS" $TimeSince "CD" "36 hours" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 2500 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 2500 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -208,10 +208,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 172800) }}
 			{{ template "Work" (sdict "Lower" 9000 "Upper" 12001 "User" .User "Job" "Influencer" "Amount" $Amount "CD" "2 days" "CDName" "WInfluencerCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Influencer" "CDSec" 172800 "TS" $TimeSince "CD" "48 hours" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Influencer" "CDSec" 172800 "TS" $TimeSince "CD" "48 hours" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 5000 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 5000 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 
@@ -225,10 +225,10 @@
 		{{ if or (eq (str $WCD.Value) "new") (ge ($TimeSince = (toInt (toDuration (currentTime.Sub $WCD.UpdatedAt)).Seconds)) 259200) }}
 			{{ template "Work" (sdict "Lower" 17500 "Upper" 25001 "User" .User "Job" "Stripper" "Amount" $Amount "CD" "3 days" "CDName" "WStripperCD" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 		{{ else }}
-			{{ template "CD" (sdict "Job" "Stripper" "CDSec" 259200 "TS" $TimeSince "CD" "3 days" "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+			{{ template "CD" (sdict "Job" "Stripper" "CDSec" 259200 "TS" $TimeSince "CD" "3 days" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 10000 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 10000 $XP) "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 

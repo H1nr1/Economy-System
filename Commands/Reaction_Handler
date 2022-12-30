@@ -231,3 +231,90 @@
 		{{ template "NoXP" (sdict "XP" (sub 10000 $XP) "MsgID" .ReactionMessage.ID "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
+
+
+
+{{ $Positions := dict 1 "🥇" 2 "🥈" 3 "🥉" }}
+{{ $GuildIcon := printf "https://cdn.discordapp.com/icons/%d/%s.png" .Guild.ID .Guild.Icon }}
+ 
+{{ if eq .Reaction.Emoji.Name "🏦" }}
+	{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
+	{{ $Rank := dbRank (sdict "pattern" "Bank") .User.ID "Bank" }}
+	{{ if in (cslice 1 2 3) $Rank }}
+		{{ $Rank = $Positions.Get $Rank }}
+	{{ else }}
+		{{ $Rank = print $Rank "." }}
+	{{ end }}
+	{{ $Place := 1 }}{{ $Pos := "" }}{{ $Desc := "" }}
+	{{ range (dbTopEntries "Bank" 10 0) }}
+		{{- if in (cslice 1 2 3) $Place -}}
+			{{- $Pos = $Positions.Get $Place -}}
+		{{- else -}}
+			{{- $Pos = print $Place "." -}}
+		{{- end -}}
+		{{- $Desc = (joinStr "\n" $Desc (print $Pos " " (userArg .UserID) " - " (toInt .Value))) -}}
+		{{- $Place = add $Place 1 -}}
+	{{ end }}
+	{{ editMessage nil .ReactionMessage.ID (cembed 
+		"author" (sdict "icon_url" $GuildIcon "name" (print .Guild.Name "'s Bank Leaderboard 💲"))
+		"description" (print $Desc "\n\n╔═ " $Rank " " .User.Mention " - " $Bank " 🪙 ═╗")
+		"color" 13938487
+		"footer" (sdict "text" "Showing top 10 bank values 🏦")
+		"timestamp" currentTime) }}
+	{{ deleteMessageReaction nil .ReactionMessage.ID .User.ID .Reaction.Emoji.Name }}
+{{ end }}
+ 
+{{ if eq .Reaction.Emoji.Name "👛" }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+	{{ $Bank := toInt (dbGet .User.ID "Bank").Value }}
+	{{ $Rank := dbRank (sdict "pattern" "Wallet") .User.ID "Wallet" }}
+	{{ if in (cslice 1 2 3) $Rank }}
+		{{ $Rank = $Positions.Get $Rank }}
+	{{ else }}
+		{{ $Rank = print $Rank "." }}
+	{{ end }}
+	{{ $Place := 1 }}{{ $Pos := "" }}{{ $Desc := "" }}
+	{{ range (dbTopEntries "Wallet" 10 0) }}
+		{{- if in (cslice 1 2 3) $Place -}}
+			{{- $Pos = $Positions.Get $Place -}}
+		{{- else -}}
+			{{- $Pos = print $Place "." -}}
+		{{- end -}}
+		{{- $Desc = (joinStr "\n" $Desc (print $Pos " " (userArg .UserID) " - " (toInt .Value))) -}}
+		{{- $Place = add $Place 1 -}}
+	{{ end }}
+	{{ editMessage nil .ReactionMessage.ID (cembed 
+		"author" (sdict "icon_url" $GuildIcon "name" (print .Guild.Name "'s Wallet Leaderboard 💲"))
+		"description" (print $Desc "\n\n╔═ " $Rank " " .User.Mention " - " $Wallet " 🪙 ═╗")
+		"color" 13938487
+		"footer" (sdict "text" "Showing top 10 wallet values 🏦")
+		"timestamp" currentTime) }}
+	{{ deleteMessageReaction nil .ReactionMessage.ID .User.ID .Reaction.Emoji.Name }}
+{{ end }}
+ 
+{{ if eq .Reaction.Emoji.Name "🧪" }}
+	{{ $XP := (dbGet .User.ID "XP").Value }}
+	{{ $Rank := dbRank (sdict "pattern" "XP") .User.ID "XP" }}
+	{{ if in (cslice 1 2 3) $Rank }}
+		{{ $Rank = $Positions.Get $Rank }}
+	{{ else }}
+		{{ $Rank = print $Rank "." }}
+	{{ end }}
+	{{ $Place := 1 }}{{ $Pos := "" }}{{ $Desc := "" }}
+	{{ range (dbTopEntries "XP" 10 0) }}
+		{{- if in (cslice 1 2 3) $Place -}}
+			{{- $Pos = $Positions.Get $Place -}}
+		{{- else -}}
+			{{- $Pos = print $Place "." -}}
+		{{- end -}}
+		{{- $Desc = (joinStr "\n" $Desc (print $Pos " " (userArg .UserID) " - " (toInt .Value))) -}}
+		{{- $Place = add $Place 1 -}}
+	{{ end }}
+	{{ editMessage nil .ReactionMessage.ID (cembed 
+		"author" (sdict "icon_url" $GuildIcon "name" (print .Guild.Name "'s XP Leaderboard 🧪"))
+		"description" (print $Desc "\n\n╔═ " $Rank " " .User.Mention " - " $XP " ═╗")
+		"color" 13938487
+		"footer" (sdict "text" "Showing top 10 XP values 🏦")
+		"timestamp" currentTime) }}
+	{{ deleteMessageReaction nil .ReactionMessage.ID .User.ID .Reaction.Emoji.Name }}
+{{ end }}

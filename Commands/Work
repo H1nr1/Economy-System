@@ -8,7 +8,7 @@
  
 {{ $XP := dbIncr .User.ID "XP" 1 }}
 
-{{ $Args := parseArgs 0 "Syntax is `$Work [int: 1/2]`" 
+{{ $Args := parseArgs 0 "Syntax is `-Work [int: 1/2]`" 
 	(carg "int" "Page") }}
 {{ $Page := $Args.Get 0 }}
 
@@ -58,7 +58,7 @@
 	{{ else }}
 		{{ sendMessage nil (cembed 
 			"title" "Invalid page number"
-			"description" "Syntax is `$Work [int:1/2]`"
+			"description" "Syntax is `-Work [int:1/2]`"
 			"color" 16711680) }}
 	{{ end }}
 {{ end }}

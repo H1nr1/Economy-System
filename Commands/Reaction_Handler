@@ -92,7 +92,7 @@
 			{{ template "CD" (sdict "Job" "Plumber" "CDSec" 3600 "TS" $TimeSince "CD" "60 minutes" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 		{{ end }}
 	{{ else }}
-		{{ template "NoXP" (sdict "XP" (sub 50 $XP) "Job" ""Plumber "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
+		{{ template "NoXP" (sdict "XP" (sub 50 $XP) "Job" "Plumber" "MsgID" .ReactionMessage.ID "User" .User "Emoji" .Reaction.Emoji.Name) }}
 	{{ end }}
 {{ end }}
 

@@ -10,14 +10,18 @@
 
 {{ $Amount := randInt 50 201 }}
 {{ $RandUser := 204255221017214977 }}
-{{ if ($Entries := dbCount "Users") }}
+{{ $Args := parseArgs 0 "Syntax is `$Poke [User: @/ID]`"
+	(carg "member" "Member") }}
+{{ if $Args.IsSet 0 }}
+	{{ $RandUser = ($Args.Get 0).User.ID }}
+{{ else if ($Entries := dbCount "Users") }}
 	{{ range (dbTopEntries "Users" 1 (randInt $Entries)) }}
 		{{- $RandUser = .User.ID -}}
 	{{ end }}
 {{ end }}
 {{ $PokeCooldown := dbGet .User.ID "PokeCooldown" }}
 {{ $TimeSince := "" }}{{ if $PokeCooldown }}{{ $TimeSince = toInt (toDuration (currentTime.Sub (or $PokeCooldown.UpdatedAt $PokeCooldown.CreatedAt))).Seconds }}{{ end }}
- 
+
 {{ if not $PokeCooldown }} {{/* First command usage for user */}}
 	{{ $Silence = dbIncr .User.ID "Wallet" $Amount }}
 	{{ sendMessage nil (cembed 

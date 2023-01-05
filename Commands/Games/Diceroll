@@ -32,6 +32,7 @@
 		{{ sendMessage nil (cembed 
 			"title" (print "Diceroll landed on " $Number "!")
 			"description" (print "You earned **quadruple** your bet: **" (mult $Amount 4) " coins**!")
+			"thumbnail" (sdict "url" "https://media.discordapp.net/attachments/1036894710343671918/1060417411599319050/image.png")
 			"color" 65280 ) }}
 
 	{{ else if ne $Dice $Number }}
@@ -39,6 +40,7 @@
 		{{ sendMessage nil (cembed 
 			"title" (print "Diceroll was not " $Number "!")
 			"description" (print "YAG rolled a " $Dice " 🥲\nYou lost your bet of " $Amount " coins")
+			"thumbnail" (sdict "url" "https://media.discordapp.net/attachments/1036894710343671918/1060417411599319050/image.png")
 			"color" 16711680 ) }}
 	{{ end }}
 

@@ -1,0 +1,65 @@
+{{/*
+        Flip a coin for some coins!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+
+{{ $XP := dbIncr .User.ID "XP" 1 }}
+
+{{ define "Embed" }}
+	{{ sendMessage nil (cembed 
+		"title" (print "It's " (index .Result 0) "!")
+		"description" (print .Emoji " | You **" (index .Result 1) "** the Coinflip and " (index .Result 2) "**" .Amount " Coins** 🪙")
+		"color" .Color ) }}
+{{ end }}
+
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 2 "Syntax is `$Coinflip <\"Heads\"/\"Tails\"> <Amount>`"
+		(carg "string" "Choice")
+		(carg "string" "Amount") }}
+	{{ $Choice := $Args.Get 0 }}
+	{{ $Amount := $Args.Get 1 }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+	{{ if eq (lower $Amount) "all" }}{{ $Amount = $Wallet }} {{ else if eq (lower $Amount) "half" }}{{ $Amount = div $Wallet 2 }} {{ end }}
+	{{ $HT := randInt 2 }}
+
+	{{ if gt (toInt $Amount) $Wallet }}
+		{{ sendMessage nil (cembed 
+			"title" "Insufficient Funds"
+			"description" "Cannot bet more than you have"
+			"color" 16711680 ) }}
+
+	{{ else if lt (toInt $Amount) 50 }}
+		{{ sendMessage nil (cembed 
+			"description" "Must bet 50 or more coins. What are you? Poor? 😐"
+			"color" 16711680) }}
+
+	{{ else if inFold (cslice "heads" "head" "h") $Choice }}
+		{{ if eq $HT 0 }}
+			{{ $Silence := dbIncr .User.ID "Wallet" (mult $Amount 2) }}
+			{{ template "Embed" (sdict "Result" (cslice "Heads" "Won" "Earned ") "Emoji" "👍" "Amount" (mult $Amount 2) "Color" 65280) }}
+		{{ else if eq $HT 1 }}
+			{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
+			{{ template "Embed" (sdict "Result" (cslice "not Heads" "Lost" "with it, your ") "Emoji" "👎" "Amount" $Amount "Color" 16711680) }}
+		{{ end }}
+
+	{{ else if inFold (cslice "tails" "tail" "t") $Choice }}
+		{{ if eq $HT 1 }}
+			{{ $Silence := dbIncr .User.ID "Wallet" (mult $Amount 2) }}
+			{{ template "Embed" (sdict "Result" (cslice "Tails" "Won" "Earned ") "Emoji" "👍" "Amount" (mult $Amount 2) "Color" 65280) }}
+		{{ else if eq $HT 0 }}
+			{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
+			{{ template "Embed" (sdict "Result" (cslice "not Tails" "Lost" "with it, your ") "Emoji" "👎" "Amount" $Amount "Color" 16711680) }}
+		{{ end }}
+
+	{{ else }}
+		{{ sendMessage nil (cembed 
+			"title" "⚠️ Invalid Bet"
+			"description" "You may bet heads or tails\nSyntax is `$Coinflip <\"Heads\"/\"Tails\"> <Amount>`" ) }}
+	{{ end }}
+
+{{ else }}
+	{{ sendMessage nil (cembed 
+		"title" "⚠️ Invalid Syntax"
+		"description" "Syntax is `$Coinflip <\"Heads\"/\"Tails\"> <Amount>`" ) }}
+{{ end }}

@@ -1,0 +1,50 @@
+{{/*
+        Fight with a bet (and your life) on the line!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 2 "Syntax is `$Coinflip <User: @/ID> <int: Amount>`"
+		(carg "member" "Member")
+		(carg "int" "Amount") }}
+	{{ $Member := $Args.Get 0 }}
+	{{ $Amount := $Args.Get 1 }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+
+  {{ if dbGet $Member.User.ID "Fight" }}
+		{{ sendMessage nil (cembed 
+			"title" (print $Member.User.Username " Already has an Active Fight")
+			"footer" (sdict "text" "They can't fight off two at once!")
+			"color" 16711680 ) }}
+
+	{{ else if gt $Amount $Wallet }}
+		{{ sendMessage nil (cembed 
+			"title" "Insufficient Funds"
+			"description" "Cannot bet more than you have in wallet"
+			"color" 16711680 ) }}
+	
+	{{ else if lt $Amount 50 }}
+		{{ sendMessage nil (cembed 
+			"description" "Must bet 50 or more coins. What are you? Poor? 😐"
+			"color" 16711680) }}
+
+	{{ else }}
+		{{ $id := sendMessageNoEscapeRetID nil (complexMessage 
+			"content" (print $Member.User.Mention ", **react to accept a fight with " .User.Username " for " (mult $Amount 2) " coins!**") 
+			"embed" (cembed 
+				"title" (print .User.Username " challenges " $Member.User.Username " to a Brawl")
+				"description" (print "If you accept, winner receives double their bet: **" (mult $Amount 2) " coins**!")
+				"thumbnail" (sdict "url" "https://media.discordapp.net/attachments/1036894710343671918/1060425871917334568/Fight.gif")
+				"footer" (sdict "text" (print $Member.User.Username " has 60 seconds to react before this fight expires"))
+				"color" (randInt 0xFFFFFF) ) ) }}
+		{{ addMessageReactions nil $id "⚔️" }}
+		{{ dbSetExpire $Member.User.ID "Fight" (sdict "Message" $id "User" .User "Bet" $Amount) 60 }}
+	{{ end }}
+
+{{ else }}
+	{{ sendMessage nil (cembed 
+		"title" "⚠️ Invalid Syntax"
+		"description" "Syntax is `$Fight <User: @/ID> <int: Amount>`"
+		"color" 16711680 ) }}
+{{ end }}

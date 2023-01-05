@@ -21,13 +21,13 @@
 
 	{{ if gt (toInt $Amount) $Wallet }} {{/* Insufficient funds */}}
 		{{ sendMessage nil (cembed 
-			"title" "Cannot deposit more than you have!"
-			"description" "Try depositing money you actually have. LMAO."
+			"title" "Insufficient Funds"
+			"description" "Cannot deposit more than you have!"
 			"color" 16711680) }}
 
 	{{ else if le (toInt $Amount) 0 }} {{/* Attempt to deposit negative amount */}}
 		{{ sendMessage nil (cembed 
-			"description" "Bruh... Cannot Deposit 0 or less coins 😐"
+			"description" "Cannot Deposit 0 or negative coins 😐"
 			"color" 16711680) }}
 
 	{{ else if le (add $Bank (toInt $Amount)) $BankLimit }} {{/* Normal deposit */}}
@@ -44,7 +44,7 @@
 		{{ $Bank = dbIncr .User.ID "Bank" $Amount }}
 		{{ sendMessage nil (cembed 
 			"title" "Bank Limit Hit‼️"
-			"description" (print "Deposited **" $Amount " coins** to your bank 🪙\n⤳ `ɪɴᴄʀᴇᴀꜱᴇ ʏᴏᴜʀ ʟɪᴍɪᴛ ʙʏ ʟᴇᴠᴇʟɪɴɢ ᴜᴘ!`📈")
+			"description" (print "Deposited **" $Amount " coins** to your bank 🪙")
 			"footer" (sdict "icon_url" (.User.AvatarURL "512") "text" (print .User.Username "'s Bank: " $Bank "/" $BankLimit " 🏧"))
 			"color" 65280) }}
 	{{ end }}

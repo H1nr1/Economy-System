@@ -38,7 +38,7 @@
 		{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
 		{{ sendMessage nil (cembed 
 			"title" (print "Diceroll was not " $Number "!")
-			"description" (print "You lost your bet of " $Amount " coins")
+			"description" (print "YAG rolled a " $Dice " 🥲\nYou lost your bet of " $Amount " coins")
 			"color" 16711680 ) }}
 	{{ end }}
 

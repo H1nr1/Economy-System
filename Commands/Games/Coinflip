@@ -10,6 +10,7 @@
 	{{ sendMessage nil (cembed 
 		"title" (print "It's " (index .Result 0) "!")
 		"description" (print .Emoji " | You **" (index .Result 1) "** the Coinflip and " (index .Result 2) "**" .Amount " Coins** 🪙")
+		"thumbnail" (sdict "url" "https://media.discordapp.net/attachments/1036894710343671918/1060419704281382972/Coinflip.gif")
 		"color" .Color ) }}
 {{ end }}
 

@@ -1,0 +1,50 @@
+{{/*
+        Roll the dice with a bet!
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+ 
+{{ $XP := dbIncr .User.ID "XP" 1 }}
+ 
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 2 "Syntax is `$Diceroll <int: 1-6> <Amount>`"
+		(carg "int" "Number" 1 6)
+		(carg "string" "Amount") }}
+	{{ $Number := $Args.Get 0 }}
+	{{ $Amount := $Args.Get 1 }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+	{{ if eq (lower $Amount) "all" }}{{ $Amount = $Wallet }} {{ else if eq (lower $Amount) "half" }}{{ $Amount = div $Wallet 2 }} {{ end }}
+	{{ $Dice := randInt 1 7 }}
+
+	{{ if gt (toInt $Amount) $Wallet }}
+		{{ sendMessage nil (cembed 
+			"title" "Insufficient Funds"
+			"description" "Cannot bet more than you have"
+			"color" 16711680 ) }}
+
+	{{ else if lt (toInt $Amount) 50 }}
+		{{ sendMessage nil (cembed 
+			"description" "Must bet 50 or more coins. What are you? Poor? 😐"
+			"color" 16711680) }}
+
+	{{ else if eq $Dice $Number }}
+		{{ $Silence := dbIncr .User.ID "Wallet" (mult $Amount 4) }}
+		{{ sendMessage nil (cembed 
+			"title" (print "Diceroll landed on " $Number "!")
+			"description" (print "You earned **quadruple** your bet: **" (mult $Amount 4) " coins**!")
+			"color" 65280 ) }}
+
+	{{ else if ne $Dice $Number }}
+		{{ $Silence := dbIncr .User.ID "Wallet" (print "-" $Amount) }}
+		{{ sendMessage nil (cembed 
+			"title" (print "Diceroll was not " $Number "!")
+			"description" (print "You lost your bet of " $Amount " coins")
+			"color" 16711680 ) }}
+	{{ end }}
+
+{{ else }}
+	{{ sendMessage nil (cembed 
+		"title" "Invalid Syntax"
+		"description" "Syntax is `$Diceroll <int: 1-6> <Amount>`"
+		"color" 16711680) }}
+{{ end }}

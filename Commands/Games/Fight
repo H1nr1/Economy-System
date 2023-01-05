@@ -4,6 +4,8 @@
         Author: H1nr1 <https://github.com/H1nr1>
 */}}
 
+{{ $XP := dbIncr .User.ID "XP 1 }}
+
 {{ if .CmdArgs }}
 	{{ $Args := parseArgs 2 "Syntax is `$Coinflip <User: @/ID> <int: Amount>`"
 		(carg "member" "Member")

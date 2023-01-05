@@ -1,0 +1,42 @@
+{{/*
+        Share some coins with 5 random users!
+        
+        *Must have User Collection setup. See https://github.com/H1nr1/Economy-System/blob/main/User_Collection
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+
+{{ $XP := dbIncr .User.ID "XP" 5 }}
+
+{{ if .CmdArgs }}
+	{{ $Args := parseArgs 1 "Syntax is `-SpreadTheWealth <int: Amount>`"
+		(carg "int" "Amount") }}
+	{{ $Amount := $Args.Get 0 }}
+	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}
+
+	{{ if gt $Amount $Wallet }}
+		{{ sendMessage nil (cembed 
+			"title" "Insufficient Funds"
+			"color" 16711680 ) }}
+
+	{{ else if lt $Amount 5 }}
+		{{ sendMessage nil (cembed 
+			"description" "Be a little more helpful now, give them some coins they can use."
+			"color" 16711680 ) }}
+
+	{{ else }}
+		{{ $XP = dbIncr .User.ID "XP" 4 }}
+		{{ $EachAmt := div $Amount 5 }}
+		{{ $Silence := "" }} {{ $Msg := "" }}
+		{{ range (dbTopEntries "Users" 5 (sub (randInt (dbCount "Users")) 5)) }}
+			{{- $Silence = dbIncr .User.ID "Wallet" $EachAmt -}}
+			{{- sendMessageNoEscape nil (print "<@" .User.ID ">, **" $.User.String " just gave you " $EachAmt " coins**!") -}}
+		{{ end }}
+		{{ $Silence = dbIncr .User.ID "Wallet" (print "-" $Amount) }}
+	{{ end }}
+
+{{ else }}
+	{{ sendMessage nil (cembed 
+		"description" "If you're going to act kind, at least add some coins..."
+		"color" 16711680 ) }}
+{{ end }}

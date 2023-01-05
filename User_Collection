@@ -1,0 +1,13 @@
+{{/*
+        Adds and removes users from database when they join/leave
+	
+        Author: H1nr1 <https://github.com/H1nr1>
+*/}}
+
+{{/* Join Message - Add the following to (each of) your join message(s) */}}
+{{ dbSet .User.ID "Users" .User }}
+
+{{/* Leave Message - Add the following to (each of) your leave message(s) */}}
+{{ dbDel .User.ID "Users" }}
+
+{{/* Thats it! You will start to build a database of current members in your server */}}

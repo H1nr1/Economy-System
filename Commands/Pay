@@ -1,5 +1,5 @@
 {{/*
-        Transfer coins to others!
+        Pay others!
 	
         Author: H1nr1 <https://github.com/H1nr1>
 */}}
@@ -7,7 +7,7 @@
 {{ $XP := dbIncr .User.ID "XP" 1 }}
 
 {{ if .CmdArgs }}
-	{{ $Args := parseArgs 2 "Syntax is `$Transfer <User: @/ID> <String: Amount>`"
+	{{ $Args := parseArgs 2 "Syntax is `$Pay <User: @/ID> <String: Amount>`"
 		(carg "member" "Member")
 		(carg "string" "Amount") }}
 	{{ $Member := $Args.Get 0 }}
@@ -23,12 +23,12 @@
 	{{ if gt (toInt $Amount) $Wallet }} {{/* Insufficient funds */}}
 		{{ sendMessage nil (cembed 
 			"title" "Cannot transfer more than you have!"
-			"description" "Try giving coins you actually have. LMAO."
+			"description" "Try giving coins you actually have"
 			"color" 16711680) }}
 
 	{{ else if lt (toInt $Amount) 0 }} {{/* Attempt to transfer negative amount */}}
 		{{ sendMessage nil (cembed 
-			"description" "Bruh... Cannot give 0 or less coins 😐"
+			"description" "Cannot give 0 or less coins 😐"
 			"color" 16711680) }}
 
 	{{ else if le (toInt $Amount) $Wallet }} {{/* Normal transfer */}}
@@ -41,6 +41,6 @@
 
 {{ else }} {{/* No arg(s) */}}
 	{{ sendMessage nil (cembed 
-		"description" "Please provide an amount of coins to transfer!"
+		"description" "Please provide a user and amount of coins to transfer!"
 		"color" 16711680) }}
 {{ end }}

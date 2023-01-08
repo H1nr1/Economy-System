@@ -9,7 +9,7 @@
 {{ $XP := dbIncr .User.ID "XP" 5 }}
 
 {{ if .CmdArgs }}
-	{{ $Args := parseArgs 1 "Syntax is `-SpreadTheWealth <int: Amount>`"
+	{{ $Args := parseArgs 1 "Syntax is `$SpreadTheWealth <int: Amount>`"
 		(carg "int" "Amount") }}
 	{{ $Amount := $Args.Get 0 }}
 	{{ $Wallet := toInt (dbGet .User.ID "Wallet").Value }}

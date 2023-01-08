@@ -7,7 +7,7 @@
 {{ $XP := dbIncr .User.ID "XP 1 }}
 
 {{ if .CmdArgs }}
-	{{ $Args := parseArgs 2 "Syntax is `$Coinflip <User: @/ID> <int: Amount>`"
+	{{ $Args := parseArgs 2 "Syntax is `-Fight <User: @/ID> <int: Amount>`"
 		(carg "member" "Member")
 		(carg "int" "Amount") }}
 	{{ $Member := $Args.Get 0 }}
